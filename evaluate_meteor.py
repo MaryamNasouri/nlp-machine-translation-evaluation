@@ -2,16 +2,13 @@ from preprocessing import preprocess_file
 from nltk.translate.meteor_score import meteor_score
 
 def compute_meteor(reference_path, hypothesis_path):
-    references = preprocess_file(reference_path)
-    hypotheses = preprocess_file(hypothesis_path)
+    references = preprocess_file(reference_path)   # list[list[str]]
+    hypotheses = preprocess_file(hypothesis_path)  # list[list[str]]
 
     scores = []
-
-    for ref, hyp in zip(references, hypotheses):
-        # meteor_score expects strings, not token lists
-        ref_str = " ".join(ref)
-        hyp_str = " ".join(hyp)
-        score = meteor_score([ref_str], hyp_str)
+    for ref_tokens, hyp_tokens in zip(references, hypotheses):
+        # meteor_score expects tokenized inputs (Iterable[str]) in newer NLTK versions
+        score = meteor_score([ref_tokens], hyp_tokens)
         scores.append(score)
 
     return sum(scores) / len(scores)
